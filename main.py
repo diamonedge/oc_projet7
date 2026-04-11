@@ -164,23 +164,23 @@ if __name__ == "__main__":
 
     print("Etape 2 - Connexion et paramétrage")
     ensure_db_and_collection(config['DEFAULT']['MongoDbUri'], config['DEFAULT']['Db_name'], config['DEFAULT']['Collection_Name'])
-    #ensure_readonly_user(config['DEFAULT']['MongoDbUri'], config['USERS_ROLES']['READER_USER_NAME'], config['USERS_ROLES']['READER_USER_PASSWORD'])
+    ensure_readonly_user(config['DEFAULT']['MongoDbUri'], config['USERS_ROLES']['READER_USER_NAME'], config['USERS_ROLES']['READER_USER_PASSWORD'])
 
-    #print("Etape 3 - Injection")
-    #n = insert_file_in_batches(
-    #    mongo_uri=config['DEFAULT']['MongoDbUri'],
-    #    db_name=config['DEFAULT']['Db_name'],
-    #    collection_name=config['DEFAULT']['Collection_Name'],
-    #    file_path=data_file_path,
-    #    batch_size=int(config['DEFAULT']['BatchSize']),
-    #    ordered=False,
-    #    delimiter=",",
-    #)
+    print("Etape 3 - Injection")
+    n = insert_file_in_batches(
+        mongo_uri=config['DEFAULT']['MongoDbUri'],
+        db_name=config['DEFAULT']['Db_name'],
+        collection_name=config['DEFAULT']['Collection_Name'],
+        file_path=liste_de_fichier[1]["chemin_complet"],
+        batch_size=int(config['DEFAULT']['BatchSize']),
+        ordered=False,
+        delimiter=",",
+    )
     
-    #print(f"Fin étape 3 - documents injectés : {n}")
+    print(f"Fin étape 3 - documents injectés : {n}")
 
-    #if (n+1)==number_of_lines:
-    #    print("Injection terminée avec succès")
-    #else:
-    #    print("Nombre de lignes inserée différent du nombre dans le fichier")
+    if (n+1)==number_of_lines:
+        print("Injection terminée avec succès")
+    else:
+        print("Nombre de lignes inserée différent du nombre dans le fichier")
 

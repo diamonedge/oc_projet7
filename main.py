@@ -6,6 +6,44 @@ from pymongo.errors import BulkWriteError, PyMongoError, CollectionInvalid,Opera
 import os, csv ,configparser
 from pathlib import Path
 #import pandas as pd
+import logging
+import sys
+from logging.handlers import RotatingFileHandler
+
+LOG_FORMAT = "[%(asctime)s][%(levelname)s] %(message)s"
+DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+
+def setup_logging(level: str = "INFO", log_file: str | None = None) -> None:
+	"""
+	Configure la journalisation au format :
+	[date heure jusqu'à la seconde][niveau] message
+
+	- level: "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"
+	- log_file: si fourni, écrit aussi dans un fichier (rotation)
+	"""
+	logger = logging.getLogger()
+	logger.setLevel(level.upper())
+
+	# Évite les doublons si setup_logging est appelé plusieurs fois
+	logger.handlers.clear()
+
+	formatter = logging.Formatter(fmt=LOG_FORMAT, datefmt=DATE_FORMAT)
+
+	# Sortie console (stdout)
+	console_handler = logging.StreamHandler(sys.stdout)
+	console_handler.setFormatter(formatter)
+	logger.addHandler(console_handler)
+
+	# Sortie fichier (optionnelle) avec rotation
+	if log_file:
+		file_handler = RotatingFileHandler(
+			log_file,
+			maxBytes=10 * 1024 * 1024,  # 10 Mo
+			backupCount=5,              # conserve 5 archives
+			encoding="utf-8",
+		)
+		file_handler.setFormatter(formatter)
+		logger.addHandler(file_handler)
 
 def charger_csv_dans_dictionnaire(chemin_dossier: str,separateur: str = ";",encodage: str = "utf-8") -> str:
 	dossier = Path(chemin_dossier)
@@ -152,21 +190,22 @@ def ensure_readonly_user(mongo_uri: str, username: str, password: str) -> Dict[s
         client.close()
 
 if __name__ == "__main__":
-    print("Initialisation de la configuration")
+	setup_logging(level="INFO", log_file="app.log")
+    logging.info("Initialisation de la configuration")
     config = configparser.ConfigParser()
     config.read('params.ini')
 
-    print("Etape 1 - Listing des fichiers à injecter")
+    logging.info("Etape 1 - Listing des fichiers à injecter")
     liste_de_fichier=charger_csv_dans_dictionnaire(config['DEFAULT']['TempDir'])
 
-    print(f"Fin etape 1")
+    logging.info(f"Fin etape 1")
     print(liste_de_fichier)
 
-    print("Etape 2 - Connexion et paramétrage")
+    logging.info("Etape 2 - Connexion et paramétrage")
     ensure_db_and_collection(config['DEFAULT']['MongoDbUri'], config['DEFAULT']['Db_name'], config['DEFAULT']['Collection_Name'])
     ensure_readonly_user(config['DEFAULT']['MongoDbUri'], config['USERS_ROLES']['READER_USER_NAME'], config['USERS_ROLES']['READER_USER_PASSWORD'])
 
-    print("Etape 3 - Injection")
+    logging.info("Etape 3 - Injection")
     n = insert_file_in_batches(
         mongo_uri=config['DEFAULT']['MongoDbUri'],
         db_name=config['DEFAULT']['Db_name'],
@@ -177,7 +216,7 @@ if __name__ == "__main__":
         delimiter=",",
     )
     
-    print(f"Fin étape 3 - documents injectés : {n}")
+    logging.info(f"Fin étape 3 - documents injectés : {n}")
 
     #if (n+1)==number_of_lines:
     #    print("Injection terminée avec succès")

@@ -7,7 +7,7 @@ MONGO_DB_JSON="mongodb_init.json"
 
 echo "use admin" > $MONGO_DB_JSON
 echo 'db.createUser({user:"'${MONGODB_ADMIN_USER}'",pwd:"'${MONGODB_ADMIN_PASSWORD}'",roles:[{role:"root",db:"admin"}]});' >> $MONGO_DB_JSON
-echo 'db.changeUserPassword("'${MONGODB_ADMIN_USER}'", "'${MONGODB_ADMIN_PASSWORD}'")' >> $MONGO_DB_JSON
+echo 'db.changeUserPassword("'${MONGODB_ADMIN_USER}'", "'${MONGODB_ADMIN_PASSWORD}'");' >> $MONGO_DB_JSON
 mongosh -f $MONGO_DB_JSON
 
 sed -e "s/#######MONGODB_ADMIN_USER#######/${MONGODB_ADMIN_USER}/g" params.ini.model > params.ini

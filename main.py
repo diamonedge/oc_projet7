@@ -171,7 +171,7 @@ if __name__ == "__main__":
         mongo_uri=config['DEFAULT']['MongoDbUri'],
         db_name=config['DEFAULT']['Db_name'],
         collection_name=config['DEFAULT']['Collection_Name'],
-        file_path=liste_de_fichier[1]["chemin_complet"],
+        file_path=liste_de_fichier[0]["chemin_complet"],
         batch_size=int(config['DEFAULT']['BatchSize']),
         ordered=False,
         delimiter=",",
@@ -179,8 +179,8 @@ if __name__ == "__main__":
     
     print(f"Fin étape 3 - documents injectés : {n}")
 
-    if (n+1)==number_of_lines:
-        print("Injection terminée avec succès")
-    else:
-        print("Nombre de lignes inserée différent du nombre dans le fichier")
+    #if (n+1)==number_of_lines:
+    #    print("Injection terminée avec succès")
+    #else:
+    #    print("Nombre de lignes inserée différent du nombre dans le fichier")
 

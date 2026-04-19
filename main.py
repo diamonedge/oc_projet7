@@ -75,15 +75,15 @@ def ensure_db_and_collection(uri: str, db_name: str, collection_name: str) -> No
 
         existing = set(db.list_collection_names())
         if collection_name in existing:
-            print(f"Collection déjà existante: {db_name}.{collection_name}")
+            logging.warning(f"Collection déjà existante: {db_name}.{collection_name}")
             return
 
         db.create_collection(collection_name)
-        print(f"Collection créée: {db_name}.{collection_name}")
+        logging.info(f"Collection créée: {db_name}.{collection_name}")
 
     except CollectionInvalid:
         # Rare course condition : quelqu'un l'a créée entre le check et la création
-        print(f"Collection déjà existante (race): {db_name}.{collection_name}")
+        logging.error(f"Collection déjà existante (race): {db_name}.{collection_name}")
     except PyMongoError as e:
         raise SystemExit(f"Erreur MongoDB: {e}") from e
     finally:

@@ -1,0 +1,12 @@
+[DEFAULT]
+MongoDbUri = mongodb://#######MONGODB_ADMIN_USER#######:#######MONGODB_ADMIN_PASSWORD#######@#######MONGODB_HOST#######:27017/
+Db_name = NosCites
+Collection_Name = listing_paris
+TempDir = injection
+BatchSize = 500
+[TEST]
+EXPECTED_FIELDS = ${EXPECTED_FIELDS}
+EXPECTED_FIELD_COUNT = ${EXPECTED_FIELD_COUNT}
+[USERS_ROLES]
+READER_USER_NAME = #######MONGODB_READER_USER#######
+READER_USER_PASSWORD = #######MONGODB_READER_PASSWORD#######

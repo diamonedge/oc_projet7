@@ -209,3 +209,4 @@ __marimo__/
 injection/
 tmp/
 uv.lock
+.python-version

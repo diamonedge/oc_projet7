@@ -1,6 +1,27 @@
 # oc_projet7
 
-# after installing db
+## 1 - installing db
+Working for debian
+``` 
+sh insta_mongo_db.sh
+```
+## 2 - post install
+```
+sh mongodb_init.sh
+```
+## 3 - launch injection
+```
+uv run main.py
+```
+## 4 - Simple questions
+```
+sh js/rapport_questions.sh
+```
+
+
+## Utils
+### after installing db
+```
 mongosh
 use admin
  db.createUser(
@@ -13,5 +34,5 @@ use admin
      ]
    }
  )
-
+```
 ... then edit params.ini with configuration

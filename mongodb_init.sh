@@ -6,7 +6,7 @@ MONGODB_READER_PASSWORD=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 20; echo)
 MONGO_DB_JSON="mongodb_init.js"
 
 echo "use admin" > $MONGO_DB_JSON
-echo 'db.createUser({user:"'${MONGODB_ADMIN_USER}'",pwd:"'${MONGODB_ADMIN_PASSWORD}'",roles:[{role:"root",db:"admin"}]});' >> $MONGO_DB_JSON
+echo 'db.createUser({user:"'${MONGODB_ADMIN_USER}'",pwd:"'${MONGODB_ADMIN_PASSWORD}'",roles:[{role:"root",db:"admin"}{ role: "userAdminAnyDatabase", db: "admin" },{ role: "readWriteAnyDatabase", db: "admin" }]});' >> $MONGO_DB_JSON
 echo 'db.changeUserPassword("'${MONGODB_ADMIN_USER}'", "'${MONGODB_ADMIN_PASSWORD}'");' >> $MONGO_DB_JSON
 mongosh < $MONGO_DB_JSON
 

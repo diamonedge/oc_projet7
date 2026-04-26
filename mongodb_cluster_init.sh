@@ -24,7 +24,7 @@ docker exec -it shard2 mongosh --eval '
 rs.initiate({
   _id: "shard2RS",
   members: [
-    { _id: 0, host: "shard1:27017" }
+    { _id: 0, host: "shard2:27017" }
   ]
 })
 '

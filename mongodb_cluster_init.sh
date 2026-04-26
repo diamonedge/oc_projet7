@@ -53,6 +53,8 @@ sh mongodb_init.sh 27018
 CLUSTER_ADMIN=$(grep MONGODB_CLUSTER_ADMIN params.ini | cut -d= -f2 | xargs)
 CLUSTER_PASSWORD=$(grep MONGODB_CLUSTER_PASSWORD params.ini | cut -d= -f2 | xargs)
 
+echo "Creating CLUSTER_ADMIN with password CLUSTER_PASSWORD"
+
 COMMAND="docker exec -it mongos mongosh \"mongodb://127.0.0.1:27017/admin\" --eval '
 db.createUser({
   user: \""$CLUSTER_ADMIN"\",
@@ -71,12 +73,15 @@ echo "################# Initialisation de l'utilisateur Reader"
 MONGODB_INJEC_USER=$(grep MONGODB_INJECT_USER params.ini | cut -d= -f2 | xargs)
 MONGODB_INJEC_PASSWORD=$(grep MONGODB_INJECT_PASSWORD params.ini | cut -d= -f2 | xargs)
 
+echo "Creating MONGODB_INJEC_USER with password MONGODB_INJEC_PASSWORD"
+
 COMMAND="docker exec -it mongos mongosh -u "$CLUSTER_ADMIN" -p "$CLUSTER_PASSWORD" --authenticationDatabase admin --eval '
 db.createUser({
   user: \""$MONGODB_INJEC_USER"\",
   pwd: \""$CLUSTER_PASSWORD"\",
   roles: [
-    { role: \"readWrite\", db: \"NosCites\" }
+    { role: \"readWrite\", db: \"NosCites\" },
+    { role: \"userAdmin\", db: \"NosCites\" }
   ]
 });
 '"

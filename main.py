@@ -33,8 +33,20 @@ if __name__ == "__main__":
         ordered=False,
         delimiter=",",
     )
-
+    
     logging.info(f"Fin étape 3 - documents injectés : {n}")
+
+    n2 = insert_file_in_batches(
+        mongo_uri=config['DEFAULT']['MongoDbUri'],
+        db_name=config['DEFAULT']['Db_name'],
+        collection_name=config['DEFAULT']['Collection_Name'],
+        file_path=liste_de_fichier[1]["chemin_complet"],
+        batch_size=int(config['DEFAULT']['BatchSize']),
+        ordered=False,
+        delimiter=",",
+    )    
+
+    logging.info(f"Fin étape 3 - documents injectés : {n2}")
     
     logging.info("Etape 4 - Rapports JS")
     subprocess.run(["sh", "js/rapport_questions.sh"], check=True)

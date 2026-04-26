@@ -6,7 +6,7 @@ services:
       mongod
       --configsvr
       --replSet cfgRS
-      --port 27018
+      --port 27017
       --bind_ip_all
     networks:
       - mongo-cluster
@@ -20,7 +20,7 @@ services:
       mongod
       --shardsvr
       --replSet shard1RS
-      --port 27018
+      --port 27017
       --bind_ip_all
     networks:
       - mongo-cluster
@@ -34,7 +34,7 @@ services:
       mongod
       --shardsvr
       --replSet shard2RS
-      --port 27018
+      --port 27017
       --bind_ip_all
     networks:
       - mongo-cluster
@@ -50,11 +50,11 @@ services:
       - shard2
     command: >
       mongos
-      --configdb cfgRS/cfg1:27018
-      --port 27018
+      --configdb cfgRS/cfg1:27017
+      --port 27017
       --bind_ip_all
     ports:
-      - "27018:27018"
+      - "27018:27017"
     networks:
       - mongo-cluster
 

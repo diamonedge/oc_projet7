@@ -68,14 +68,14 @@ db.createUser({
 eval $COMMAND
 
 
-echo "################# Initialisation de l'utilisateur Reader"
+echo "################# Initialisation de l'utilisateur Injecteur"
 
 MONGODB_INJEC_USER=$(grep MONGODB_INJECT_USER params.ini | cut -d= -f2 | xargs)
 MONGODB_INJEC_PASSWORD=$(grep MONGODB_INJECT_PASSWORD params.ini | cut -d= -f2 | xargs)
 
 echo "Creating MONGODB_INJEC_USER with password MONGODB_INJEC_PASSWORD"
 
-COMMAND="mongosh -u "$CLUSTER_ADMIN" -p "$CLUSTER_PASSWORD" \"mongodb://127.0.0.1:27018/admin\"--authenticationDatabase admin --eval '
+COMMAND="mongosh \"mongodb://"$CLUSTER_ADMIN":"$CLUSTER_PASSWORD"@127.0.0.1:27018/admin\" --eval '
 db.createUser({
   user: \""$MONGODB_INJEC_USER"\",
   pwd: \""$MONGODB_INJEC_PASSWORD"\",

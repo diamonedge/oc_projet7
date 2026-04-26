@@ -52,15 +52,15 @@ sh mongodb_init.sh 27018
 CLUSTER_ADMIN=$(grep MONGODB_CLUSTER_ADMIN params.ini | cut -d= -f2)
 CLUSTER_PASSWORD=$(grep MONGODB_CLUSTER_PASSWORD params.ini | cut -d= -f2)
 
-docker exec -it mongos mongosh "mongodb://127.0.0.1:27017/admin" --eval '
+docker exec -it mongos mongosh "mongodb://127.0.0.1:27017/admin" --eval "
 db.createUser({
-  user: "'$CLUSTER_ADMIN'",
-  pwd: "'$CREATE_PASSWORD_JS'",
+  user: "$CLUSTER_ADMIN",
+  pwd: "$CREATE_PASSWORD_JS",
   roles: [
-    { role: "root", db: "admin" }
+    { role: \"root\", db: \"admin\" }
   ]
 })
-'
+"
 
 echo "################### lancement de la configuration sharding"
 

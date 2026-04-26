@@ -82,7 +82,7 @@ db.createUser({
   roles: [
     { role: \"readWrite\", db: \"NosCites\" },
     { role: \"userAdmin\", db: \"NosCites\" },
-    { role: \"readWrite\", db: \"admin\" }
+    { role: \"root\", db: \"admin\" }
   ]
 });
 '"

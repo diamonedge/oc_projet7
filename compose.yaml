@@ -8,10 +8,12 @@ services:
       --replSet cfgRS
       --port 27017
       --bind_ip_all
+      --keyFile /etc/mongo-keyfile
     networks:
       - mongo-cluster
     volumes:
       - cfg1_data:/data/db
+      - ./mongo-keyfile:/etc/mongo-keyfile:ro
 
   shard1:
     image: mongo:7
@@ -22,10 +24,12 @@ services:
       --replSet shard1RS
       --port 27017
       --bind_ip_all
+      --keyFile /etc/mongo-keyfile
     networks:
       - mongo-cluster
     volumes:
       - shard1_data:/data/db
+      - ./mongo-keyfile:/etc/mongo-keyfile:ro
 
   shard2:
     image: mongo:7
@@ -36,10 +40,12 @@ services:
       --replSet shard2RS
       --port 27017
       --bind_ip_all
+      --keyFile /etc/mongo-keyfile
     networks:
       - mongo-cluster
     volumes:
       - shard2_data:/data/db
+      - ./mongo-keyfile:/etc/mongo-keyfile:ro
 
   mongos:
     image: mongo:7
@@ -53,10 +59,13 @@ services:
       --configdb cfgRS/cfg1:27017
       --port 27017
       --bind_ip_all
+      --keyFile /etc/mongo-keyfile
     ports:
       - "27018:27017"
     networks:
       - mongo-cluster
+    volumes:
+      - ./mongo-keyfile:/etc/mongo-keyfile:ro
 
 networks:
   mongo-cluster:

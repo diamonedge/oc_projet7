@@ -1,5 +1,10 @@
+sudo rm -f mongo-keyfile
+openssl rand -base64 756 > mongo-keyfile
+chmod 600 mongo-keyfile
+sudo chown 999:999 mongo-keyfile
+
 docker compose down -v && docker compose up -d 
-echo "lancement de la configuration"
+echo "################### lancement de la configuration Replica set & sharding"
 
 docker exec -it cfg1 mongosh --eval '
 rs.initiate({
@@ -58,9 +63,9 @@ docker exec -it shard1 mongosh --eval 'rs.status().myState'
 docker exec -it shard2 mongosh --eval 'rs.status().myState'
 
 
-echo "injection des données"
-
+echo "################# Initialisation de l'utilisateur admin"
 sh mongodb_init.sh 27018
 
+echo "################# injection des données"
 uv run main.py
 

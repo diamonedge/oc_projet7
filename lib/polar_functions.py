@@ -232,3 +232,119 @@ def build_calendars_collection_from_listings(
 
     except PyMongoError as exc:
         raise RuntimeError(f"Erreur MongoDB pendant le merge : {exc}") from exc
+
+def compute_estimated_availability_rate_by_room_type(
+    mongo_uri: str,
+    db_name: str,
+    collection_name: str,
+    output_csv_path: str | None = None,
+) -> pl.DataFrame:
+    """
+    Extrait les annonces Airbnb depuis MongoDB et calcule, avec Polars,
+    le taux moyen d'indisponibilité estimé par type de logement.
+
+    Ce calcul n'est PAS un vrai taux de réservation.
+    Il s'agit d'un proxy basé sur les champs availability_30/60/90/365.
+
+    Formule :
+        taux_indisponibilite_N = (N - availability_N) / N * 100
+
+    Exemple :
+        availability_30 = 0
+        => indisponible 30 jours sur 30
+        => taux_indisponibilite_30 = 100 %
+    """
+
+    projection = {
+        "_id": 0,
+        "id": 1,
+        "room_type": 1,
+        "property_type": 1,
+        "calendar_last_scraped": 1,
+        "availability_30": 1,
+        "availability_60": 1,
+        "availability_90": 1,
+        "availability_365": 1,
+    }
+
+    try:
+        with MongoClient(mongo_uri) as client:
+            collection = client[db_name][collection_name]
+            documents: list[dict[str, Any]] = list(
+                collection.find({}, projection).batch_size(10_000)
+            )
+
+    except PyMongoError as exc:
+        raise RuntimeError(f"Erreur MongoDB pendant l'extraction : {exc}") from exc
+
+    if not documents:
+        raise ValueError(
+            f"Aucun document trouvé dans {db_name}.{collection_name}."
+        )
+
+    df = pl.from_dicts(documents)
+
+    result = (
+        df.lazy()
+        .with_columns(
+            pl.col("room_type").cast(pl.Utf8),
+            pl.col("property_type").cast(pl.Utf8),
+            pl.col("calendar_last_scraped")
+                .cast(pl.Utf8)
+                .str.to_date("%Y-%m-%d", strict=False)
+                .alias("calendar_last_scraped"),
+
+            pl.col("availability_30").cast(pl.Int64, strict=False),
+            pl.col("availability_60").cast(pl.Int64, strict=False),
+            pl.col("availability_90").cast(pl.Int64, strict=False),
+            pl.col("availability_365").cast(pl.Int64, strict=False),
+        )
+        .with_columns(
+            pl.col("calendar_last_scraped")
+                .dt.truncate("1mo")
+                .alias("mois_scraping"),
+
+            ((30 - pl.col("availability_30")) / 30 * 100)
+                .round(2)
+                .alias("taux_indisponibilite_30_pct"),
+
+            ((60 - pl.col("availability_60")) / 60 * 100)
+                .round(2)
+                .alias("taux_indisponibilite_60_pct"),
+
+            ((90 - pl.col("availability_90")) / 90 * 100)
+                .round(2)
+                .alias("taux_indisponibilite_90_pct"),
+
+            ((365 - pl.col("availability_365")) / 365 * 100)
+                .round(2)
+                .alias("taux_indisponibilite_365_pct"),
+        )
+        .group_by(["mois_scraping", "room_type"])
+        .agg(
+            pl.len().alias("nombre_annonces"),
+
+            pl.mean("taux_indisponibilite_30_pct")
+                .round(2)
+                .alias("taux_moyen_indisponibilite_30_pct"),
+
+            pl.mean("taux_indisponibilite_60_pct")
+                .round(2)
+                .alias("taux_moyen_indisponibilite_60_pct"),
+
+            pl.mean("taux_indisponibilite_90_pct")
+                .round(2)
+                .alias("taux_moyen_indisponibilite_90_pct"),
+
+            pl.mean("taux_indisponibilite_365_pct")
+                .round(2)
+                .alias("taux_moyen_indisponibilite_365_pct"),
+        )
+        .sort(["mois_scraping", "room_type"])
+        .collect()
+    )
+
+    if output_csv_path:
+        result.write_csv(output_csv_path)
+
+    return result

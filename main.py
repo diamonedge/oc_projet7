@@ -41,6 +41,8 @@ if __name__ == "__main__":
     
     logging.info("Etape 5 - Rapports Polars")
     
+    logging.info("Etape 5.1 - Création du calendrier")
+    
     stats = build_calendars_collection_from_listings(
         mongo_uri=config['DEFAULT']['MongoDbUri'],
         db_name=config['DEFAULT']['Db_name'],
@@ -48,12 +50,17 @@ if __name__ == "__main__":
         target_collection_name="calendars",
     )
 
-    print(stats)
+    logging.info(stats)
+    
+   
+    logging.info("Etape 5.2 - Calculer le taux de réservation moyen par mois par type de logement")
+        report = compute_estimated_availability_rate_by_room_type(
+        mongo_uri=config['DEFAULT']['MongoDbUri'],
+        db_name=config['DEFAULT']['Db_name'],
+        collection_name=config['DEFAULT']['Collection_Name'],
+        output_csv_path="rapport_indisponibilite_par_type_logement.csv",
+    )
 
-    logging.info(f"Fin étape 5")    
+    print(report)        
 
-    #if (n+1)==number_of_lines:
-    #    print("Injection terminée avec succès")
-    #else:
-    #    print("Nombre de lignes inserée différent du nombre dans le fichier")
-
+    logging.info(f"Fin étape 5")

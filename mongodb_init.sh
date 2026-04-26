@@ -1,6 +1,7 @@
 MONGODB_ADMIN_USER="admin"
 MONGODB_ADMIN_PASSWORD=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 20; echo)
 MONGODB_HOST="localhost"
+MONGODB_PORT="${1:=27017}"
 MONGODB_READER_USER="reader_user"
 MONGODB_READER_PASSWORD=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 20; echo)
 MONGO_DB_JSON="mongodb_init.js"
@@ -13,6 +14,7 @@ mongosh < $MONGO_DB_JSON
 sed -e "s/#######MONGODB_ADMIN_USER#######/${MONGODB_ADMIN_USER}/g" params.ini.model > params.ini
 sed -i -e "s/#######MONGODB_ADMIN_PASSWORD#######/${MONGODB_ADMIN_PASSWORD}/g" params.ini
 sed -i -e "s/#######MONGODB_HOST#######/${MONGODB_HOST}/g" params.ini
+sed -i -e "s/#######MONGODB_PORT#######/${MONGODB_PORT}/g" params.ini
 sed -i -e "s/#######MONGODB_READER_USER#######/${MONGODB_READER_USER}/g" params.ini
 sed -i -e "s/#######MONGODB_READER_PASSWORD#######/${MONGODB_READER_PASSWORD}/g" params.ini
 

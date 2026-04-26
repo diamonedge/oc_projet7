@@ -1,5 +1,5 @@
 docker compose down -v && docker compose up -d 
-echo "lancement de la configuration du premier serveur"
+echo "lancement de la configuration"
 
 docker exec -it cfg1 mongosh --eval '
 rs.initiate({
@@ -56,4 +56,11 @@ sh.shardCollection("NosCites.listing_paris", { id: "hashed" });
 docker exec -it cfg1 mongosh --eval 'rs.status().myState'
 docker exec -it shard1 mongosh --eval 'rs.status().myState'
 docker exec -it shard2 mongosh --eval 'rs.status().myState'
+
+
+echo "injection des données"
+
+sh mongodb_init.sh 27018
+
+uv run main.py
 

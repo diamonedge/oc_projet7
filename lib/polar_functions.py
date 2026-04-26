@@ -9,15 +9,6 @@ import hashlib
 import json
 import polars as pl
 
-
-from __future__ import annotations
-
-from typing import Any
-
-import polars as pl
-from pymongo import MongoClient
-from pymongo.errors import PyMongoError
-
 def top_neighbourhoods_by_booking_rate_by_month(
     mongo_uri: str,
     db_name: str,

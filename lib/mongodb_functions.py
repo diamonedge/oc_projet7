@@ -88,6 +88,7 @@ def insert_file_in_batches( mongo_uri: str,db_name: str, collection_name: str, f
 
     try:
         collection: Collection = client[db_name][collection_name]
+        empty_mongodb_collection(mongo_uri,db_name,collection_name)
         docs_iter = csv_rows_as_documents(file_path, delimiter=delimiter, encoding=encoding)
 
         for batch in batched(docs_iter, batch_size):
@@ -150,3 +151,23 @@ def ensure_readonly_user(mongo_uri: str, username: str, password: str) -> Dict[s
         raise RuntimeError(f"Erreur MongoDB (droits/commande) : {e}") from e
     finally:
         client.close()
+
+def empty_mongodb_collection(mongo_uri: str,db_name: str,collection_name: str,) -> int:
+    """
+    Vide une collection MongoDB sans supprimer la collection ni ses index.
+
+    Retourne :
+        Le nombre de documents supprimés.
+    """
+    try:
+        with MongoClient(mongo_uri) as client:
+            collection = client[db_name][collection_name]
+            result = collection.delete_many({})
+            return result.deleted_count
+
+    except PyMongoError as exc:
+        raise RuntimeError(
+            f"Erreur MongoDB lors du vidage de la collection "
+            f"{db_name}.{collection_name} : {exc}"
+        ) from exc
+        

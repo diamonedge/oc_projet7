@@ -6,5 +6,6 @@ readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
     "pandas>=2.3.3",
+    "polars>=1.36.1",
     "pymongo>=4.16.0",
 ]

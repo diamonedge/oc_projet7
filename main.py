@@ -1,6 +1,7 @@
 from lib.logging_project import setup_logging
 from lib.mongodb_functions import *
 from lib.polar_functions import *
+from lib.gcp_storage_functions import *
 import subprocess
 import logging
 
@@ -94,3 +95,16 @@ if __name__ == "__main__":
     )    
     
     logging.info(f"Fin étape 5")
+    
+    logging.info(f"Etape 6")
+ 
+    result = upload_csv_to_gcs(
+        csv_path="rapport_indisponibilite_par_type_logement.csv",
+        bucket_name="mon-bucket-analytics",
+        destination_blob_name="airbnb/reports/rapport_indisponibilite_par_type_logement.csv",
+        service_account_json_path="./openclassroom-488810-358030ff0c67.json",
+    )
+
+    print(result)   
+    
+    logging.info(f"Fin étape 6")        

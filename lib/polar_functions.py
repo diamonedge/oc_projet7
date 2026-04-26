@@ -16,21 +16,6 @@ def top_neighbourhoods_by_booking_rate_by_month(
     calendars_collection: str = "calendars",
     top_n: int = 10,
 ) -> pl.DataFrame:
-    """
-    Identifie, par mois de scraping, les quartiers ayant le plus fort
-    taux d'indisponibilité estimé.
-
-    Source :
-      - calendars.listing_id
-      - calendars.calendar_last_scraped
-      - calendars.unavailability_rate_30_pct
-      - listing_paris.id
-      - listing_paris.neighbourhood_cleansed
-
-    Limite :
-      ce n'est pas un vrai taux de réservation,
-      mais un proxy basé sur availability_30.
-    """
 
     listings_df = mongo_to_polars(
         mongo_uri=mongo_uri,
@@ -128,13 +113,6 @@ def housing_count_by_neighbourhood(
     db_name: str,
     listings_collection: str = "listing_paris",
 ) -> pl.DataFrame:
-    """
-    Calcule le nombre de logements par quartier.
-    Colonne source : neighbourhood_cleansed
-
-    Ce n'est pas une vraie densité en logements/km²,
-    car la surface des quartiers n'est pas fournie.
-    """
 
     df = mongo_to_polars(
         mongo_uri=mongo_uri,
@@ -183,13 +161,6 @@ def median_reviews_by_host_category(
     db_name: str,
     listings_collection: str = "listing_paris",
 ) -> pl.DataFrame:
-    """
-    Calcule la médiane du nombre d'avis par catégorie d'hôte.
-    Catégorie utilisée :
-      - superhost si host_is_superhost == "t"
-      - non_superhost si host_is_superhost == "f"
-      - inconnu sinon
-    """
 
     df = mongo_to_polars(
         mongo_uri=mongo_uri,
@@ -236,10 +207,6 @@ def median_reviews_all_listings(
     db_name: str,
     listings_collection: str = "listing_paris",
 ) -> pl.DataFrame:
-    """
-    Calcule la médiane du nombre d'avis pour l'ensemble des logements.
-    Colonne source : number_of_reviews
-    """
 
     df = mongo_to_polars(
         mongo_uri=mongo_uri,
@@ -279,10 +246,7 @@ def mongo_to_polars(
     query_filter: dict[str, Any] | None = None,
     batch_size: int = 10_000,
 ) -> pl.DataFrame:
-    """
-    Extrait une collection MongoDB vers un DataFrame Polars
-    avec projection des champs utiles.
-    """
+
     query_filter = query_filter or {}
 
     try:
@@ -303,10 +267,7 @@ def mongo_to_polars(
     return pl.from_dicts(documents)
 
 def _stable_hash(document: dict[str, Any]) -> str:
-    """
-    Calcule une empreinte stable du document.
-    Sert à savoir si le document a changé depuis la dernière alimentation.
-    """
+
     payload = json.dumps(
         document,
         sort_keys=True,
@@ -323,18 +284,6 @@ def build_calendars_collection_from_listings(
     target_collection_name: str = "calendars",
     batch_size: int = 1000,
 ) -> dict[str, int]:
-    """
-    Crée/alimente une collection MongoDB `calendars` à partir de `listing_paris`.
-
-    Logique de merge :
-      - si la clé (listing_id, calendar_last_scraped) n'existe pas : insertion ;
-      - si elle existe mais que le contenu diffère : remplacement complet ;
-      - si elle existe et que le contenu est identique : aucune action.
-
-    Attention :
-      cette fonction ne recrée pas un vrai calendrier journalier.
-      Elle matérialise une table/collection d'indicateurs de disponibilité agrégée.
-    """
 
     projection = {
         "_id": 0,
@@ -529,22 +478,7 @@ def compute_estimated_availability_rate_by_room_type(
     collection_name: str,
     output_csv_path: str | None = None,
 ) -> pl.DataFrame:
-    """
-    Extrait les annonces Airbnb depuis MongoDB et calcule, avec Polars,
-    le taux moyen d'indisponibilité estimé par type de logement.
-
-    Ce calcul n'est PAS un vrai taux de réservation.
-    Il s'agit d'un proxy basé sur les champs availability_30/60/90/365.
-
-    Formule :
-        taux_indisponibilite_N = (N - availability_N) / N * 100
-
-    Exemple :
-        availability_30 = 0
-        => indisponible 30 jours sur 30
-        => taux_indisponibilite_30 = 100 %
-    """
-
+  
     projection = {
         "_id": 0,
         "id": 1,

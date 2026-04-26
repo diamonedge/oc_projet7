@@ -72,7 +72,7 @@ if __name__ == "__main__":
     print(
         median_reviews_by_host_category(
             mongo_uri=config['DEFAULT']['MongoDbUri'],
-            db_name=DB_NAME,
+            db_name=config['DEFAULT']['Db_name'],
         )
     )
 

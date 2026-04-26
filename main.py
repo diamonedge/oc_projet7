@@ -52,15 +52,45 @@ if __name__ == "__main__":
 
     logging.info(stats)
     
-   
     logging.info("Etape 5.2 - Calculer le taux de réservation moyen par mois par type de logement")
-        report = compute_estimated_availability_rate_by_room_type(
+    print(compute_estimated_availability_rate_by_room_type(
         mongo_uri=config['DEFAULT']['MongoDbUri'],
         db_name=config['DEFAULT']['Db_name'],
         collection_name=config['DEFAULT']['Collection_Name'],
         output_csv_path="rapport_indisponibilite_par_type_logement.csv",
+    ))
+
+    logging.info("Etape 5.3 - Calculer la médiane des nombre d’avis pour tous les logements")
+    print(
+        median_reviews_all_listings(
+            mongo_uri=config['DEFAULT']['MongoDbUri'],
+            db_name=config['DEFAULT']['Db_name'],
+        )
     )
 
-    print(report)        
+    logging.info("Etape 5.4 - Calculer la médiane des nombre d’avis par catégorie d’hôte")
+    print(
+        median_reviews_by_host_category(
+            mongo_uri=config['DEFAULT']['MongoDbUri'],
+            db_name=DB_NAME,
+        )
+    )
 
+    logging.info("Etape 5.5 - Calculer la densité de logements par quartier de Paris")
+    print(
+        housing_count_by_neighbourhood(
+            mongo_uri=config['DEFAULT']['MongoDbUri'],
+            db_name=config['DEFAULT']['Db_name'],
+        )
+    )
+
+    logging.info("Etape 5.6 - Identifier les quartiers avec le plus fort taux de réservation par mois")
+    print(
+        top_neighbourhoods_by_booking_rate_by_month(
+            mongo_uri=config['DEFAULT']['MongoDbUri'],
+            db_name=config['DEFAULT']['Db_name'],
+            top_n=10,
+        )
+    )    
+    
     logging.info(f"Fin étape 5")

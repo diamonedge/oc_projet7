@@ -20,7 +20,7 @@ rs.initiate({
 })
 '
 
-docker exec -it shard1 mongosh --eval '
+docker exec -it shard2 mongosh --eval '
 rs.initiate({
   _id: "shard2RS",
   members: [

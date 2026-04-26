@@ -9,7 +9,7 @@ echo "################# Création de l'infra"
 
 docker compose down -v && docker compose up -d 
 
-
+sleep 5
 
 echo "################### lancement de la configuration Replica set"
 
@@ -45,6 +45,7 @@ docker exec -it cfg1 mongosh --eval 'rs.status().myState'
 docker exec -it shard1 mongosh --eval 'rs.status().myState'
 docker exec -it shard2 mongosh --eval 'rs.status().myState'
 
+sleep 5
 
 echo "################# Initialisation de l'utilisateur admin"
 sh mongodb_init.sh 27018

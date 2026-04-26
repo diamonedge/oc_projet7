@@ -81,7 +81,8 @@ db.createUser({
   pwd: \""$MONGODB_INJEC_PASSWORD"\",
   roles: [
     { role: \"readWrite\", db: \"NosCites\" },
-    { role: \"userAdmin\", db: \"NosCites\" }
+    { role: \"userAdmin\", db: \"NosCites\" },
+    { role: \"readWrite\", db: \"admin\" }
   ]
 });
 '"

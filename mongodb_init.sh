@@ -20,11 +20,6 @@ echo 'db.createUser({user: "'${MONGODB_INJEC_USER}'", pwd: "'${MONGODB_INJEC_PAS
 if [ "${MONGODB_PORT}" -eq "27017" ]
 then
 	mongosh < $MONGO_DB_JSON
-else
-	CREATE_PASSWORD_JS=$(cat $MONGO_DB_JSON)
-	COMMAND="docker exec -it mongos mongosh --eval '${CREATE_PASSWORD_JS}'"
-	echo $COMMAND
-	eval $COMMAND
 fi
 
 echo "############ MONGODB CONFIGURATION INTIALIZATION : params file ############"

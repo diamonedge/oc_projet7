@@ -100,7 +100,7 @@ if __name__ == "__main__":
  
     result = upload_csv_to_gcs(
         csv_path="rapport_indisponibilite_par_type_logement.csv",
-        bucket_name="mon-bucket-analytics",
+        bucket_name="oc_vmo_prj7",
         destination_blob_name="airbnb/reports/rapport_indisponibilite_par_type_logement.csv",
         service_account_json_path="./openclassroom-488810-358030ff0c67.json",
     )

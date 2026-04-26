@@ -18,7 +18,7 @@ then
 	mongosh < $MONGO_DB_JSON
 else
 	CREATE_PASSWORD_JS=$(cat $MONGO_DB_JSON)
-	docker exec -it mongos mongosh "${CREATE_PASSWORD_JS}"
+	docker exec -it mongos mongosh --eval "${CREATE_PASSWORD_JS}"
 fi
 
 echo "############ MONGODB CONFIGURATION INTIALIZATION : params file ############"

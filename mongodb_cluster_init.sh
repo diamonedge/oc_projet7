@@ -49,8 +49,8 @@ docker exec -it shard2 mongosh --eval 'rs.status().myState'
 echo "################# Initialisation de l'utilisateur admin"
 sh mongodb_init.sh 27018
 
-CLUSTER_ADMIN=$(grep MONGODB_CLUSTER_ADMIN params.ini | cut -d= -f2)
-CLUSTER_PASSWORD=$(grep MONGODB_CLUSTER_PASSWORD params.ini | cut -d= -f2)
+CLUSTER_ADMIN=$(grep MONGODB_CLUSTER_ADMIN params.ini | cut -d= -f2 | xargs)
+CLUSTER_PASSWORD=$(grep MONGODB_CLUSTER_PASSWORD params.ini | cut -d= -f2 | xargs)
 
 docker exec -it mongos mongosh "mongodb://127.0.0.1:27017/admin" --eval "
 db.createUser({

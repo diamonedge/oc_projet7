@@ -77,13 +77,13 @@ docker exec -it mongos mongosh -u $CLUSTER_ADMIN -p $CLUSTER_PASSWORD --authenti
 sh.enableSharding("NosCites");
 '
 
-docker exec -it mongos mongosh --eval '
+docker exec -it mongos mongosh  -u $CLUSTER_ADMIN -p $CLUSTER_PASSWORD --eval '
 use NosCites;
 db.listing_paris.createIndex({ id: "hashed" });
 sh.shardCollection("NosCites.listing_paris", { id: "hashed" });
 '
 
-docker exec -it cfg1 mongosh --eval 'rs.status().myState'
+docker exec -it cfg1 mongosh  -u $CLUSTER_ADMIN -p $CLUSTER_PASSWORD --eval 'rs.status().myState'
 docker exec -it shard1 mongosh --eval 'rs.status().myState'
 docker exec -it shard2 mongosh --eval 'rs.status().myState'
 

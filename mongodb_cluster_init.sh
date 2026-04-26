@@ -69,8 +69,8 @@ eval $COMMAND
 echo "################# Initialisation de l'utilisateur Reader"
 sh mongodb_init.sh 27018
 
-MONGODB_INJEC_USER=$(grep MONGODB_ADMIN_USER params.ini | cut -d= -f2 | xargs)
-MONGODB_INJEC_PASSWORD=$(grep MONGODB_ADMIN_PASSWORD params.ini | cut -d= -f2 | xargs)
+MONGODB_INJEC_USER=$(grep MONGODB_INJECT_USER params.ini | cut -d= -f2 | xargs)
+MONGODB_INJEC_PASSWORD=$(grep MONGODB_INJECT_PASSWORD params.ini | cut -d= -f2 | xargs)
 
 COMMAND="docker exec -it mongos mongosh -u "$CLUSTER_ADMIN" -p "$CLUSTER_PASSWORD" --authenticationDatabase admin --eval '
 db.createUser({

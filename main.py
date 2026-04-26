@@ -41,16 +41,15 @@ if __name__ == "__main__":
     
     logging.info("Etape 5 - Rapports Polars")
     
-    df_result = compute_booking_rate_by_month_and_room_type_from_mongo(
+    stats = build_calendars_collection_from_listings(
         mongo_uri=config['DEFAULT']['MongoDbUri'],
         db_name=config['DEFAULT']['Db_name'],
-        listings_collection=config['DEFAULT']['Collection_Name'],
-        calendar_collection="calendar_paris",
-        output_csv_path="rapport_taux_reservation_par_mois.csv"
+        source_collection_name=config['DEFAULT']['Collection_Name'],
+        target_collection_name="calendars",
     )
 
-    print(df_result)
-    
+    print(stats)
+
     logging.info(f"Fin étape 5")    
 
     #if (n+1)==number_of_lines:

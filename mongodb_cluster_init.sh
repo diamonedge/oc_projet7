@@ -72,7 +72,7 @@ sh mongodb_init.sh 27018
 MONGODB_INJEC_USER=$(grep MONGODB_ADMIN_USER params.ini | cut -d= -f2 | xargs)
 MONGODB_INJEC_PASSWORD=$(grep MONGODB_ADMIN_PASSWORD params.ini | cut -d= -f2 | xargs)
 
-COMMAND="docker exec -it mongos mongosh \"mongodb://127.0.0.1:27017/admin\" --eval '
+COMMAND="docker exec -it mongos mongosh -u $CLUSTER_ADMIN -p $CLUSTER_PASSWORD --authenticationDatabase admin --eval '
 db.createUser({
   user: \""$MONGODB_INJEC_USER"\",
   pwd: \""$CLUSTER_PASSWORD"\",

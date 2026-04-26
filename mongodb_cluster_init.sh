@@ -85,7 +85,7 @@ db.createUser({
   ]
 });
 '"
-
+echo "Commande à passer : $COMMAND"
 eval $COMMAND
 
 echo "################### lancement de la configuration sharding"

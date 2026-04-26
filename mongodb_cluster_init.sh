@@ -60,7 +60,7 @@ db.createUser({
   roles: [
     { role: \"root\", db: \"admin\" }
   ]
-})
+});
 '"
 
 eval $COMMAND
@@ -79,7 +79,7 @@ db.createUser({
   roles: [
     { role: \"readWrite\", db: \"NosCites\" }
   ]
-})
+});
 '"
 
 eval $COMMAND

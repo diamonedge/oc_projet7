@@ -55,7 +55,7 @@ CLUSTER_PASSWORD=$(grep MONGODB_CLUSTER_PASSWORD params.ini | cut -d= -f2)
 docker exec -it mongos mongosh "mongodb://127.0.0.1:27017/admin" --eval "
 db.createUser({
   user: "$CLUSTER_ADMIN",
-  pwd: "$CREATE_PASSWORD_JS",
+  pwd: "$CLUSTER_PASSWORD",
   roles: [
     { role: \"root\", db: \"admin\" }
   ]

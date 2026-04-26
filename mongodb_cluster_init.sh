@@ -14,7 +14,7 @@ sh mongodb_init.sh 27018
 
 CLUSTER_ADMIN=$(grep MONGODB_CLUSTER_ADMIN params.ini | cut -d= -f2)
 CLUSTER_PASSWORD=$(grep MONGODB_CLUSTER_PASSWORD params.ini | cut -d= -f2)
-CREATE_PASSWORD_JS=$(cat $MONGO_DB_JSON)
+CREATE_PASSWORD_JS=$(cat mongodb_init.js)
 
 docker exec -it mongos mongosh --eval "$CREATE_PASSWORD_JS"
 

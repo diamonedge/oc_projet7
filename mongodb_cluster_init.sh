@@ -1,3 +1,11 @@
+echo "################# Initialisation de l'utilisateur admin"
+sh mongodb_init.sh 27018
+
+CLUSTER_ADMIN=$(grep MONGODB_CLUSTER_ADMIN params.ini | cut -d= -f2)
+CLUSTER_PASSWORD=$(grep MONGODB_CLUSTER_PASSWORD params.ini | cut -d= -f2)
+
+echo "################# Lancement génération keyfile"
+
 sudo rm -f mongo-keyfile
 openssl rand -base64 756 > mongo-keyfile
 chmod 600 mongo-keyfile
@@ -38,17 +46,17 @@ docker exec -it cfg1 mongosh --eval 'rs.status().myState'
 docker exec -it shard1 mongosh --eval 'rs.status().myState'
 docker exec -it shard2 mongosh --eval 'rs.status().myState'
 
-docker exec -it mongos mongosh --eval '
+docker exec -it mongos mongosh -u $CLUSTER_ADMIN -p $CLUSTER_PASSWORD --authenticationDatabase admin --eval '
 sh.addShard("shard1RS/shard1:27017");
 sh.addShard("shard2RS/shard2:27017");
 sh.status();
 '
 
-docker exec -it mongos mongosh --eval '
+docker exec -it mongos mongosh -u $CLUSTER_ADMIN -p $CLUSTER_PASSWORD --authenticationDatabase admin --eval '
 sh.enableSharding("NosCites");
 '
 
-docker exec -it mongos mongosh --eval '
+docker exec -it mongos mongosh -u $CLUSTER_ADMIN -p $CLUSTER_PASSWORD --authenticationDatabase admin --eval '
 sh.enableSharding("NosCites");
 '
 
@@ -63,8 +71,7 @@ docker exec -it shard1 mongosh --eval 'rs.status().myState'
 docker exec -it shard2 mongosh --eval 'rs.status().myState'
 
 
-echo "################# Initialisation de l'utilisateur admin"
-sh mongodb_init.sh 27018
+
 
 echo "################# injection des données"
 uv run main.py

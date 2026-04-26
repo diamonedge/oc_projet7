@@ -35,5 +35,7 @@ sed -i -e "s/#######MONGODB_HOST#######/${MONGODB_HOST}/g" params.ini
 sed -i -e "s/#######MONGODB_PORT#######/${MONGODB_PORT}/g" params.ini
 sed -i -e "s/#######MONGODB_READER_USER#######/${MONGODB_READER_USER}/g" params.ini
 sed -i -e "s/#######MONGODB_READER_PASSWORD#######/${MONGODB_READER_PASSWORD}/g" params.ini
+sed -i -e "s/#######MONGODB_CLUSTER_ADMIN#######/${MONGODB_ADMIN_USER}/g" params.ini
+sed -i -e "s/#######MONGODB_CLUSTER_PASSWORD#######/${MONGODB_ADMIN_PASSWORD}/g" params.ini
 
 echo "############ MONGODB CONFIGURATION INTIALIZATION : end ############"

@@ -1,5 +1,7 @@
 [DEFAULT]
 MongoDbUri = mongodb://#######MONGODB_ADMIN_USER#######:#######MONGODB_ADMIN_PASSWORD#######@#######MONGODB_HOST#######:#######MONGODB_PORT#######/
+MONGODB_INJECT_USER=#######MONGODB_ADMIN_USER#######
+MONGODB_INJECT_PASSWORD=#######MONGODB_ADMIN_PASSWORD#######
 Db_name = NosCites
 Collection_Name = listing_paris
 TempDir = injection

@@ -47,7 +47,7 @@ docker exec -it shard2 mongosh --eval 'rs.status().myState'
 
 sleep 5
 
-echo "################# Initialisation de l'utilisateur admin"
+echo "################# Initialisation de l'utilisateur Admin"
 sh mongodb_init.sh 27018
 
 CLUSTER_ADMIN=$(grep MONGODB_CLUSTER_ADMIN params.ini | cut -d= -f2 | xargs)
@@ -59,6 +59,25 @@ db.createUser({
   pwd: \""$CLUSTER_PASSWORD"\",
   roles: [
     { role: \"root\", db: \"admin\" }
+  ]
+})
+'"
+
+eval $COMMAND
+
+
+echo "################# Initialisation de l'utilisateur Reader"
+sh mongodb_init.sh 27018
+
+MONGODB_INJEC_USER=$(grep MONGODB_ADMIN_USER params.ini | cut -d= -f2 | xargs)
+MONGODB_INJEC_PASSWORD=$(grep MONGODB_ADMIN_PASSWORD params.ini | cut -d= -f2 | xargs)
+
+COMMAND="docker exec -it mongos mongosh \"mongodb://127.0.0.1:27017/admin\" --eval '
+db.createUser({
+  user: \""$MONGODB_INJEC_USER"\",
+  pwd: \""$CLUSTER_PASSWORD"\",
+  roles: [
+    { role: \"readWrite\", db: \"NosCites\" }
   ]
 })
 '"

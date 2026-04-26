@@ -210,3 +210,6 @@ injection/
 tmp/
 uv.lock
 .python-version
+params.ini
+mongodb_init.js
+rapport.txt

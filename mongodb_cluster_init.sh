@@ -9,16 +9,9 @@ echo "################# Création de l'infra"
 
 docker compose down -v && docker compose up -d 
 
-echo "################# Initialisation de l'utilisateur admin"
-sh mongodb_init.sh 27018
 
-CLUSTER_ADMIN=$(grep MONGODB_CLUSTER_ADMIN params.ini | cut -d= -f2)
-CLUSTER_PASSWORD=$(grep MONGODB_CLUSTER_PASSWORD params.ini | cut -d= -f2)
-CREATE_PASSWORD_JS=$(cat mongodb_init.js)
 
-docker exec -it mongos mongosh --eval "$CREATE_PASSWORD_JS"
-
-echo "################### lancement de la configuration Replica set & sharding"
+echo "################### lancement de la configuration Replica set"
 
 docker exec -it cfg1 mongosh --eval '
 rs.initiate({
@@ -52,14 +45,23 @@ docker exec -it cfg1 mongosh --eval 'rs.status().myState'
 docker exec -it shard1 mongosh --eval 'rs.status().myState'
 docker exec -it shard2 mongosh --eval 'rs.status().myState'
 
+
+echo "################# Initialisation de l'utilisateur admin"
+sh mongodb_init.sh 27018
+
+CLUSTER_ADMIN=$(grep MONGODB_CLUSTER_ADMIN params.ini | cut -d= -f2)
+CLUSTER_PASSWORD=$(grep MONGODB_CLUSTER_PASSWORD params.ini | cut -d= -f2)
+CREATE_PASSWORD_JS=$(cat mongodb_init.js)
+
+docker exec -it mongos mongosh --eval "$CREATE_PASSWORD_JS"
+
+
+echo "################### lancement de la configuration sharding"
+
 docker exec -it mongos mongosh -u $CLUSTER_ADMIN -p $CLUSTER_PASSWORD --authenticationDatabase admin --eval '
 sh.addShard("shard1RS/shard1:27017");
 sh.addShard("shard2RS/shard2:27017");
 sh.status();
-'
-
-docker exec -it mongos mongosh -u $CLUSTER_ADMIN -p $CLUSTER_PASSWORD --authenticationDatabase admin --eval '
-sh.enableSharding("NosCites");
 '
 
 docker exec -it mongos mongosh -u $CLUSTER_ADMIN -p $CLUSTER_PASSWORD --authenticationDatabase admin --eval '

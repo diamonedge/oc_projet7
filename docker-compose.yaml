@@ -1,0 +1,67 @@
+services:
+  cfg1:
+    image: mongo:7
+    container_name: cfg1
+    command: >
+      mongod
+      --configsvr
+      --replSet cfgRS
+      --port 27017
+      --bind_ip_all
+    networks:
+      - mongo-cluster
+    volumes:
+      - cfg1_data:/data/db
+
+  shard1:
+    image: mongo:7
+    container_name: shard1
+    command: >
+      mongod
+      --shardsvr
+      --replSet shard1RS
+      --port 27017
+      --bind_ip_all
+    networks:
+      - mongo-cluster
+    volumes:
+      - shard1_data:/data/db
+
+  shard2:
+    image: mongo:7
+    container_name: shard2
+    command: >
+      mongod
+      --shardsvr
+      --replSet shard2RS
+      --port 27017
+      --bind_ip_all
+    networks:
+      - mongo-cluster
+    volumes:
+      - shard2_data:/data/db
+
+  mongos:
+    image: mongo:7
+    container_name: mongos
+    depends_on:
+      - cfg1
+      - shard1
+      - shard2
+    command: >
+      mongos
+      --configdb cfgRS/cfg1:27017
+      --port 27017
+      --bind_ip_all
+    ports:
+      - "27017:27017"
+    networks:
+      - mongo-cluster
+
+networks:
+  mongo-cluster:
+
+volumes:
+  cfg1_data:
+  shard1_data:
+  shard2_data:

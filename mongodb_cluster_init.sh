@@ -73,6 +73,8 @@ MONGODB_INJEC_PASSWORD=$(grep MONGODB_INJECT_PASSWORD params.ini | cut -d= -f2 |
 
 COMMAND="docker exec -it mongos mongosh -u "$CLUSTER_ADMIN" -p "$CLUSTER_PASSWORD" --authenticationDatabase admin --eval '
 use admin;
+
+
 db.createUser({
   user: \""$MONGODB_INJEC_USER"\",
   pwd: \""$CLUSTER_PASSWORD"\",

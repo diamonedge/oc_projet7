@@ -1,6 +1,7 @@
 from lib.logging_project import setup_logging
 from lib.mongodb_functions import *
 from lib.polar_functions import *
+import subprocess
 import logging
 
 
@@ -35,6 +36,7 @@ if __name__ == "__main__":
     logging.info(f"Fin étape 3 - documents injectés : {n}")
     
     logging.info("Etape 4 - Rapports JS")
+    subprocess.run(["bash", ". js/rapport_questions.sh"], check=True)
     logging.info(f"Fin étape 4 - documents injectés : {n}")
     
     logging.info("Etape 5 - Rapports Polars")
